@@ -1,0 +1,34 @@
+#Deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodbtest
+spec:
+  # serviceName: mongodbtest
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodbtest
+  template:
+    metadata:
+      labels:
+        app: mongodbtest
+        selector: mongodbtest
+    spec:
+      containers:
+      - name: mongodbtest
+        image: mongo:3       
+        envFrom:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mongodb-username
+                key: username
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongodb-password
+                key: password
+		  - configMapKeyRef:
+		      name: MONGODB-CONFIGMAP
